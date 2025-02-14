@@ -11,7 +11,6 @@ from character_subclass import (
 from turn_base import TurnBase
 import inquirer
 import random
-from weapon import hammer, iron_sword, short_bow
 
 
 # ------------ setup ------------

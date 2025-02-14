@@ -2,7 +2,6 @@
 import os
 import random
 from character import Hero, Enemy
-from pprint import pprint
 import inquirer
 
 # ------------ setup ------------
