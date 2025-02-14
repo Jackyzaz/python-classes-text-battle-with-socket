@@ -1,4 +1,4 @@
-from character import Hero
+from character import Hero, Enemy
 from weapon import hammer, short_bow, iron_sword
 
 choices = [
@@ -26,19 +26,19 @@ class HeroArcher(Hero):
         self.equip(short_bow)
 
 
-class EnenmyWarrior(Enenmy):
+class EnenmyWarrior(Enemy):
     def __init__(self, name):
         super().__init__(name=name, health=100, classname=choices[0])
         self.equip(iron_sword)
 
 
-class EnenmyPaladin(Enenmy):
+class EnenmyPaladin(Enemy):
     def __init__(self, name):
         super().__init__(name=name, health=200, classname=choices[1])
         self.equip(hammer)
 
 
-class EnenmyArcher(Enenmy):
+class EnenmyArcher(Enemy):
     def __init__(self, name):
         super().__init__(name=name, health=50, classname=choices[2])
         self.equip(short_bow)

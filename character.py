@@ -46,9 +46,13 @@ class Hero(Character):
 
 # ------------ subclass setup ------------
 class Enemy(Character):
-    def __init__(self, name: str, health: int, weapon, classname) -> None:
+    def __init__(self, name: str, health: int, classname) -> None:
         super().__init__(name=name, health=health, classname=classname)
-        self.weapon = weapon
+        self.weapon = None
         self.classname = classname
 
         self.health_bar = HealthBar(self, color="red")
+
+    def equip(self, weapon) -> None:
+        self.weapon = weapon
+        print(f"{self.name} equipped a(n) {self.weapon.name}!")
