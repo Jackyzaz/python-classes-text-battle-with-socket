@@ -39,16 +39,6 @@ class TurnBase:
         ]
         self.hero_choice = choicesMap[inquirer.prompt(questions)["choice"]]
 
-        # while self.hero_choice == "":
-        #     self.hero_choice = input("Enter your choice: ").upper()
-        #     if self.hero_choice == "":
-        #         print("❌ Please enter a choice, cannot be empty.")
-        #     elif self.hero_choice in "RPS":
-        #         break
-        #     else:
-        #         self.hero_choice = ""
-        #         print("❌ Pleas Enter Valid Choices")
-
     def proccess_choice(self):
         choices = ["R", "P", "S"]
         choiceEmoji = {"R": "🗿", "P": "📃", "S": "✂️"}
