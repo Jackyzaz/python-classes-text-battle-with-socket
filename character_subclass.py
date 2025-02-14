@@ -1,7 +1,11 @@
 from character import Hero
 from weapon import hammer, short_bow, iron_sword
 
-choices = ["⚔️ Warrior", "🛡️ Paladin", "🏹 Archer"]
+choices = [
+    "⚔️ Warrior (Balance)",
+    "🛡️ Paladin (⬇️ATK ,⬆️DEF)",
+    "🏹 Archer (⬆️ATK , ⬇️DEF)",
+]
 
 
 class Warrior(Hero):

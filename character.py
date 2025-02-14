@@ -20,6 +20,12 @@ class Character:
             f"{target.name} with {self.weapon.name}"
         )
 
+    def print_attack(self, target):
+        print(
+            f"{self.name} dealt {self.weapon.damage} damage to "
+            f"{target.name} with {self.weapon.name}"
+        )
+
 
 # ------------ subclass setup ------------
 class Hero(Character):
