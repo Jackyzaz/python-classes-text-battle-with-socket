@@ -26,7 +26,8 @@ while True:
         input()
         break
 
-    control.draw_choice()
+    # control.draw_choice()
+    print()
     control.input_choice()
     control.proccess_choice()
     # -----------------------
@@ -34,6 +35,7 @@ while True:
 
     hero.health_bar.draw()
     enemy.health_bar.draw()
-    control.draw_choice()
+    print()
+    # control.draw_choice()
     control.proccess_choice()
     input()

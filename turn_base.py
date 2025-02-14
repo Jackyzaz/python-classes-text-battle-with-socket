@@ -2,6 +2,8 @@
 import os
 import random
 from character import Hero, Enemy
+from pprint import pprint
+import inquirer
 
 # ------------ setup ------------
 os.system("")
@@ -27,15 +29,25 @@ class TurnBase:
 
     def input_choice(self):
         self.hero_choice = ""
-        while self.hero_choice == "":
-            self.hero_choice = input("Enter your choice: ").upper()
-            if self.hero_choice == "":
-                print("❌ Please enter a choice, cannot be empty.")
-            elif self.hero_choice in "RPS":
-                break
-            else:
-                self.hero_choice = ""
-                print("❌ Pleas Enter Valid Choices")
+        choicesMap = {"🗿 Rock": "R", "📃 Paper": "P", "✂️ Scissor": "S"}
+        questions = [
+            inquirer.List(
+                "choice",
+                message="What size do you need?",
+                choices=["🗿 Rock", "📃 Paper", "✂️ Scissor"],
+            ),
+        ]
+        self.hero_choice = choicesMap[inquirer.prompt(questions)["choice"]]
+
+        # while self.hero_choice == "":
+        #     self.hero_choice = input("Enter your choice: ").upper()
+        #     if self.hero_choice == "":
+        #         print("❌ Please enter a choice, cannot be empty.")
+        #     elif self.hero_choice in "RPS":
+        #         break
+        #     else:
+        #         self.hero_choice = ""
+        #         print("❌ Pleas Enter Valid Choices")
 
     def proccess_choice(self):
         choices = ["R", "P", "S"]
