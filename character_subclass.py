@@ -8,19 +8,37 @@ choices = [
 ]
 
 
-class Warrior(Hero):
+class HeroWarrior(Hero):
     def __init__(self, name):
         super().__init__(name=name, health=100, classname=choices[0])
         self.equip(iron_sword)
 
 
-class Paladin(Hero):
+class HeroPaladin(Hero):
     def __init__(self, name):
         super().__init__(name=name, health=200, classname=choices[1])
         self.equip(hammer)
 
 
-class Archer(Hero):
+class HeroArcher(Hero):
+    def __init__(self, name):
+        super().__init__(name=name, health=50, classname=choices[2])
+        self.equip(short_bow)
+
+
+class EnenmyWarrior(Enenmy):
+    def __init__(self, name):
+        super().__init__(name=name, health=100, classname=choices[0])
+        self.equip(iron_sword)
+
+
+class EnenmyPaladin(Enenmy):
+    def __init__(self, name):
+        super().__init__(name=name, health=200, classname=choices[1])
+        self.equip(hammer)
+
+
+class EnenmyArcher(Enenmy):
     def __init__(self, name):
         super().__init__(name=name, health=50, classname=choices[2])
         self.equip(short_bow)

@@ -1,7 +1,13 @@
 # ------------ imports ------------
 import os
-from character import Hero, Enemy
-from character_subclass import Warrior, Archer, Paladin
+from character_subclass import (
+    HeroWarrior,
+    HeroArcher,
+    HeroPaladin,
+    EnenmyArcher,
+    EnenmyPaladin,
+    EnenmyWarrior,
+)
 from turn_base import TurnBase
 import inquirer
 import random
@@ -26,20 +32,20 @@ def initial_stage():
 
     selected_class = inquirer.prompt(questions)["choice"]
     if selected_class == choices[0]:
-        hero = Warrior(name="Hero")
+        hero = HeroWarrior(name="Hero")
     elif selected_class == choices[1]:
-        hero = Paladin(name="Hero")
+        hero = HeroPaladin(name="Hero")
     elif selected_class == choices[2]:
-        hero = Archer(name="Hero")
+        hero = HeroArcher(name="Hero")
 
     # random enemy class
     enemy_class = random.choice(choices)
     if enemy_class == choices[0]:
-        enemy = Enemy(name="Enemy", health=100, weapon=iron_sword, classname=choices[0])
+        enemy = EnenmyWarrior(name="Enemy")
     elif enemy_class == choices[1]:
-        enemy = Enemy(name="Enemy", health=200, weapon=hammer, classname=choices[1])
+        enemy = EnenmyPaladin(name="Enemy")
     elif enemy_class == choices[2]:
-        enemy = Enemy(name="Enemy", health=50, weapon=short_bow, classname=choices[2])
+        enemy = EnenmyArcher(name="Enemy")
 
     control = TurnBase(hero, enemy)
     print()
