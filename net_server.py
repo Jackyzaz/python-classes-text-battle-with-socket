@@ -83,7 +83,7 @@ def run_server(host="0.0.0.0", port=9999):
         conn, addr = s.accept()
         print(f"Client connected from {addr}")
         clients.append((conn, addr))
-        send_json(conn, {"type": "info", "msg": "Connected to game server. Please send your class selection: {\"type\":\"select_class\", \"choice\":0|1|2, \"name\":\"You name\"}"})
+        send_json(conn, {"type": "info", "msg": "Connected to game server. Waiting for Another player..."})
 
     conn1, addr1 = clients[0]
     conn2, addr2 = clients[1]
