@@ -66,6 +66,26 @@ def recv_json(s):
                 return None
 
 
+# modify render_health_bar to accept a hp_width parameter for consistent padding
+def render_health_bar(cur, maxv, length=20, hp_width=None):
+    """Return a string like '██████░░░░  95% ( 95/100)' with padded numbers if hp_width provided"""
+    try:
+        cur = max(0, int(cur))
+        maxv = max(1, int(maxv))
+    except Exception:
+        return f"{cur}/{maxv}"
+    pct = cur / maxv
+    filled = int(round(length * pct))
+    empty = length - filled
+    bar = "█" * filled + "░" * empty
+    percent_text = f"{int(round(pct * 100)):3d}%"
+    if hp_width is None:
+        return f"{bar} {percent_text} ({cur}/{maxv})"
+    else:
+        # right-align numbers to hp_width so columns line up
+        return f"{bar} {percent_text} ({str(cur).rjust(hp_width)}/{str(maxv).rjust(hp_width)})"
+
+
 def interactive_mode(host, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host, port))
@@ -91,6 +111,9 @@ def interactive_mode(host, port):
 
     send_json(s, {"type": "select_class", "choice": int(choice), "name": name})
 
+    # round counter
+    round_count = 0
+
     while True:
         msg = recv_json(s)
         if msg is None:
@@ -101,12 +124,22 @@ def interactive_mode(host, port):
         if t == "info":
             print("Server:", msg.get("msg"))
         elif t == "start":
+            round_count = 0
             print("Game started")
-            for p in msg.get("players", []):
-                print(f"{p['name']} - {p['class']} - {p['health']}/{p['health_max']}")
+            players = msg.get("players", [])
+            # compute padding widths
+            name_width = max((len(p.get("name", "")) for p in players), default=0)
+            hp_width = max((len(str(p.get("health_max", 0))) for p in players), default=1)
+            for p in players:
+                hb = render_health_bar(p.get("health", 0), p.get("health_max", 1), hp_width=hp_width)
+                # pad name to name_width so bars align
+                print(f"{p.get('name',''): <{name_width}} : {p.get('class','')} - {hb}")
+            print()
         elif t == "request_choice":
+            # new round begins when server asks for choice
+            round_count += 1
             options = ["A - Attack", "C - Counter", "D - Defense"]
-            selection = choose_from_list("Round: choose action:", options)
+            selection = choose_from_list(f"Round {round_count}: choose action:", options)
             # normalize to single letter
             if selection:
                 c = str(selection).strip()[0].upper()
@@ -125,12 +158,18 @@ def interactive_mode(host, port):
                     print("Invalid")
             send_json(s, {"type": "round_choice", "choice": c})
         elif t == "state_update":
-            print("--- Round Result ---")
+            print(f"--- Round {round_count} Result ---")
             print(msg.get("last_action"))
-            for p in msg.get("players", []):
-                print(f"{p['name']}: {p['health']}/{p['health_max']}")
+            print()
+            players = msg.get("players", [])
+            name_width = max((len(p.get("name", "")) for p in players), default=0)
+            hp_width = max((len(str(p.get("health_max", 0))) for p in players), default=1)
+            for p in players:
+                hb = render_health_bar(p.get("health", 0), p.get("health_max", 1), hp_width=hp_width)
+                print(f"{p.get('name',''): <{name_width}} : {hb}")
         elif t == "game_over":
             print("Game over! Winner:", msg.get("winner"))
+            print(f"Total rounds: {round_count}")
             break
         elif t == "error":
             print("Error from server:", msg.get("msg"))
