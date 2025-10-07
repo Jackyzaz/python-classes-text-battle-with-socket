@@ -2,6 +2,10 @@ import socket
 import json
 import threading
 import sys
+import time
+
+# small pause before showing attack/action text
+ACTION_DELAY = 0.1  # seconds
 
 # add: try to prefer a module named "query" (as requested), then fall back to other common choice libs
 try:
@@ -86,6 +90,18 @@ def render_health_bar(cur, maxv, length=20, hp_width=None):
         return f"{bar} {percent_text} ({str(cur).rjust(hp_width)}/{str(maxv).rjust(hp_width)})"
 
 
+# add: small emoji ascii/banner to illustrate the action cycle
+def render_ascii_art():
+    """
+    Compact emoji banner showing Attack / Counter / Defense cycle.
+    """
+    return (
+        "╭──────────────────────────────────────────────────────────────────────────────╮\n"
+        "│  ⚔️  Attack    →    🛡️  Counter    →    🏹  Defense    →    ⚔️   Attack      │\n"
+        "╰──────────────────────────────────────────────────────────────────────────────╯"
+    )
+
+
 def interactive_mode(host, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host, port))
@@ -138,6 +154,10 @@ def interactive_mode(host, port):
         elif t == "request_choice":
             # new round begins when server asks for choice
             round_count += 1
+            # Add Guide (use emoji ascii art)
+            print(render_ascii_art())
+            # print("Guide: Attack > Counter > Defense > Attack (and so on)")
+            
             options = ["A - Attack", "C - Counter", "D - Defense"]
             selection = choose_from_list(f"Round {round_count}: choose action:", options)
             # normalize to single letter
@@ -158,6 +178,12 @@ def interactive_mode(host, port):
                     print("Invalid")
             send_json(s, {"type": "round_choice", "choice": c})
         elif t == "state_update":
+            # slight pause for dramatic effect before showing last action
+            try:
+                sys.stdout.flush()
+                time.sleep(ACTION_DELAY)
+            except KeyboardInterrupt:
+                pass
             print(f"--- Round {round_count} Result ---")
             print(msg.get("last_action"))
             print()
