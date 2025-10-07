@@ -2,6 +2,7 @@ import socket
 import json
 import threading
 import sys
+import inquirer
 
 
 def send_json(s, obj):
@@ -29,18 +30,23 @@ def interactive_mode(host, port):
     s.connect((host, port))
     print(f"Connected to server {host}:{port}")
 
-    # choose class
-    print("Select your class:")
-    print("0) Warrior (balance)")
-    print("1) Paladin (high HP, low dmg)")
-    print("2) Archer (low HP, high dmg)")
+    # choose class using inquirer
+    choices = [
+        "0) \u2694\ufe0f Warrior (balance)",
+        "1) \ud83d\udee1\ufe0f Paladin (high HP, low dmg)",
+        "2) \ud83c\udff9 Archer (low HP, high dmg)",
+    ]
 
-    name = input("Your name: ") or "Player"
-    while True:
-        choice = input("Choice (0/1/2): ")
-        if choice in ("0", "1", "2"):
-            break
-        print("Invalid input")
+    questions = [
+        inquirer.Text("name", message="Your name", default="Player"),
+        inquirer.List("class_choice", message="Select your class", choices=choices),
+    ]
+
+    answers = inquirer.prompt(questions)
+    name = answers.get("name") or "Player"
+    choice = answers.get("class_choice")
+    # extract leading digit
+    choice = choice.split(")", 1)[0]
 
     send_json(s, {"type": "select_class", "choice": int(choice), "name": name})
 
@@ -58,12 +64,17 @@ def interactive_mode(host, port):
             for p in msg.get("players", []):
                 print(f"{p['name']} - {p['class']} - {p['health']}/{p['health_max']}")
         elif t == "request_choice":
-            print("Round: choose action: A=Attack, C=Counter, D=Defense")
-            while True:
-                c = input("Your action (A/C/D): ").upper()
-                if c in ("A", "C", "D"):
-                    break
-                print("Invalid")
+            # prompt with inquirer choices
+            questions = [
+                inquirer.List(
+                    "action",
+                    message="Round: choose action",
+                    choices=["A) \ud83d\udde1\ufe0f Attack", "C) \ud83d\udca5 Counter", "D) \ud83d\udee1\ufe0f Defense"],
+                )
+            ]
+            ans = inquirer.prompt(questions)
+            sel = ans.get("action")
+            c = sel.split(")", 1)[0]
             send_json(s, {"type": "round_choice", "choice": c})
         elif t == "state_update":
             print("--- Round Result ---")
